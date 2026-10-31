@@ -1,86 +1,97 @@
 # FitAdmin
 
-**FitAdmin** es una aplicación de escritorio para la **gestión integral de gimnasios**.  
-Permite administrar socios, registrar asistencias, controlar pagos y generar reportes financieros, todo desde una interfaz moderna y sencilla.
+Aplicación de escritorio para la gestión de gimnasios. Funciona sin conexión a internet y sin instalar una base de datos: todo queda guardado en un archivo SQLite en la computadora del usuario.
 
-## 🚀 Funcionalidades principales
-- Registro y administración de socios.
-- Control de asistencias diarias.
-- Gestión de pagos y cuotas.
-- Registro y control de gastos.
-- Reportes financieros diarios, mensuales y anuales.
-- Análisis de rentabilidad.
-- Interfaz amigable y adaptada para escritorio.
+Desarrollada originalmente para un gimnasio que la usó en producción.
 
-## 🛠️ Tecnologías utilizadas
-- **Frontend:** React  
-- **Backend:** Node.js con Sequelize y SQLite  
-- **Escritorio:** Electron  
-- **Base de datos:** SQLite (incrustada, no requiere instalación externa)  
+## Funcionalidades
 
-> Cada módulo (`frontend` y `backend`) incluye su propio README con más detalles técnicos.
+- **Socios:** alta, edición, búsqueda y baja, con estado activo o inactivo.
+- **Control de acceso:** al registrar una asistencia el sistema verifica si la cuota del socio está al día y la marca como permitida o denegada, indicando el motivo.
+- **Cuotas y pagos:** tipos de cuota configurables (duración y precio) y registro de pagos por socio.
+- **Gastos:** registro y consulta de egresos del gimnasio.
+- **Finanzas:** ingresos diarios, mensuales y anuales, gastos mensuales y rentabilidad anual, con gráficos.
 
-## 📂 Estructura del proyecto
+## Stack
+
+| Capa | Tecnologías |
+|---|---|
+| Escritorio | Electron, electron-builder (instalador NSIS para Windows) |
+| Backend | Node.js, Express 5, Sequelize, SQLite, Swagger |
+| Frontend | React 19, Vite, Material UI, Bootstrap, Chart.js, Recharts |
+
+## Cómo funciona
+
+Al abrir la aplicación, Electron:
+
+1. Crea (si no existe) la base `database.sqlite` en la carpeta de datos de la aplicación (en Windows, dentro de `%APPDATA%`). Así los datos se conservan aunque se reinstale o actualice el programa.
+2. Levanta el backend como un proceso de Node en segundo plano, en `http://localhost:3001`.
+3. Abre la ventana con el frontend ya compilado.
+
 ```
-web/
-│
-├── backend/fitadmin-backend   # Código y lógica del servidor
-├── frontend/fit-admin-frontend # Interfaz gráfica de usuario
-├── main.js                    # Punto de entrada de Electron
-├── package.json               # Dependencias y scripts principales
-├── icono.ico / icono.png      # Íconos de la aplicación
-└── .gitignore
+┌─────────────────────────── Electron ───────────────────────────┐
+│  Ventana (React)  ── HTTP ──▶  Backend (Express)  ──▶  SQLite  │
+└────────────────────────────────────────────────────────────────┘
 ```
 
-## ⚙️ Requisitos previos
-1. **Node.js portable**:  
-   - Debe descargarse una versión portable de Node.js (la app fue probada con Node 20).  
-   - Crear en la raíz del proyecto una carpeta llamada `node` y colocar allí los archivos de Node portable.  
+## Estructura del repositorio
 
-2. **Instalación de dependencias**  
-   Desde la carpeta raíz del proyecto, ejecutar:
-   ```bash
-   npm install
-   ```
+```
+fitadmin/
+├── main.js      proceso principal de Electron
+├── backend/     API REST (Express + Sequelize)
+├── frontend/    interfaz (React + Vite)
+└── icono.ico
+```
 
-## ▶️ Cómo ejecutar el proyecto
-1. Crear la carpeta `node` en la raíz del proyecto y colocar allí la versión portable de Node.js.
-2. Instalar dependencias:
-   ```bash
-   npm install
-   ```
-3. Compilar y ejecutar la aplicación de escritorio:
-   ```bash
-   npm run start
-   ```
-   o, si está configurado en package.json:
-   ```bash
-   npm run electron:start
-   ```
-4. Se abrirá la ventana de la aplicación con el frontend cargado y el backend ejecutándose en segundo plano.
+Cada módulo de negocio (`members`, `payments`, `assistances`, `feeTypes`, `expenses`, `reports`) tiene en el backend sus propias rutas, controlador y modelo, y en el frontend su carpeta dentro de `src/features`.
 
-## 📦 Compilación para distribución
-Para generar un instalador ejecutable:
+## Cómo ejecutarlo
+
+### Requisitos
+
+- Node.js 20 o superior
+
+### Instalación
+
+```bash
+npm install
+npm --prefix backend install
+npm --prefix frontend install
+```
+
+### Desarrollo
+
+Compilar el frontend y abrir la aplicación:
+
+```bash
+npm run build:frontend
+npm start
+```
+
+Para trabajar sólo sobre la interfaz con recarga automática, levantar el backend y el servidor de Vite por separado:
+
+```bash
+node backend/index.js
+npm --prefix frontend run dev
+```
+
+La documentación de la API queda en `http://localhost:3001/api-docs`.
+
+### Generar el instalador
+
+El instalador incluye su propio Node para no depender de que el usuario lo tenga instalado. Antes de compilar, copiar `node.exe` en la carpeta `node/` de la raíz del proyecto:
+
 ```bash
 npm run build
 ```
 
-Esto creará la versión instalable de **FitAdmin**.
+El instalador queda en `dist/`.
 
----
+## Licencia
 
-## 📜 Licencia
-Este proyecto está licenciado bajo la **MIT License**, lo que significa que podés usar, modificar y distribuir este software de manera libre, siempre que se incluya el aviso de copyright y la licencia correspondiente.
+Distribuido bajo licencia MIT. Ver [LICENSE](LICENSE).
 
-## 👤 Autor
-**Desarrollador:** Michael Jonathan Illescas  
-- GitHub: [MichaelIllescas](https://github.com/MichaelIllescas)  
-- LinkedIn: [Perfil en LinkedIn](https://www.linkedin.com/in/michael-jonathan-illescas) 
+## Autor
 
-
-## 📧 Contacto
-Para consultas o soporte: **info@imperial-net.com**
-
----
-💡 **Nota:** Este README explica la visión general y los pasos de instalación/ejecución.  
-Para más detalles técnicos, consultá los archivos README dentro de las carpetas `frontend` y `backend`.
+Jonathan Illescas · [GitHub](https://github.com/MichaelIllescas)
