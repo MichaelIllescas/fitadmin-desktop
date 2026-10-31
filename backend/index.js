@@ -1,57 +1,51 @@
+const express = require('express')
+const cors = require('cors')
+const sequelize = require('./config/database')
 
-const express = require('express');
-const cors = require('cors');
-const sequelize = require('./config/database');
-const memberRoutes = require('./src/members/routes/member.routes');
-const expenseRoutes = require('./src/expenses/routes/expense.routes');
-const swaggerUi = require('swagger-ui-express');
-const swaggerSpec = require('./config/swagger');
-const feeTypeRoutes = require('./src/feeTypes/routes/feeTypes.routes');
-const paymentRoutes = require('./src/payments/routes/payment.routes');
-const assistanceRoutes = require('./src/assistances/routes/assistances.routes');
-const reportRoutes = require('./src/reports/routes/report.routes');
+const memberRoutes = require('./src/members/routes/member.routes')
+const expenseRoutes = require('./src/expenses/routes/expense.routes')
+const feeTypeRoutes = require('./src/feeTypes/routes/feeTypes.routes')
+const paymentRoutes = require('./src/payments/routes/payment.routes')
+const assistanceRoutes = require('./src/assistances/routes/assistances.routes')
+const reportRoutes = require('./src/reports/routes/report.routes')
 
-const app = express();
-const PORT = 3001; // podés cambiar el puerto si querés
+const swaggerUi = require('swagger-ui-express')
+const swaggerSpec = require('./config/swagger')
 
-// Middlewares
-app.use(cors());
-app.use(express.json());
+const app = express()
+const PORT = 3001
 
-// Rutas
+app.use(cors())
+app.use(express.json())
 
-// Members
-app.use('/api/members', memberRoutes);
+app.use('/api/members', memberRoutes)
+app.use('/api/fee-types', feeTypeRoutes)
+app.use('/api/payments', paymentRoutes)
+app.use('/api/assistances', assistanceRoutes)
+app.use('/api/expenses', expenseRoutes)
+app.use('/api/reports', reportRoutes)
 
-// FeeTypes
-app.use('/api/fee-types', feeTypeRoutes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
-// Payments
-app.use('/api/payments', paymentRoutes);
+async function init() {
+  try {
+    await sequelize.authenticate()
+    console.log('[DB] Conexión OK')
 
-// Assistances
-app.use('/api/assistances', assistanceRoutes);
+    await sequelize.query('PRAGMA journal_mode = WAL;')
+    await sequelize.query('PRAGMA synchronous = NORMAL;')
 
-// Expenses
-app.use('/api/expenses', expenseRoutes);
+    await sequelize.sync()
+    console.log('[DB] Modelos sincronizados')
 
-// Reports
-app.use('/api/reports', reportRoutes);
-
-
-
-
-
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-// Sincronizar base de datos y levantar servidor
-sequelize.sync() // usa alter: true para desarrollo (ajusta la tabla automáticamente)
-  .then(() => {
-    console.log('Base de datos sincronizada');
     app.listen(PORT, () => {
-      console.log(`Servidor corriendo en http://localhost:${PORT}`);
-    });
-  })
-  .catch((error) => {
-    console.error('Error al conectar con la base de datos:', error);
-  });
+      console.log(`Servidor corriendo en http://localhost:${PORT}`)
+      console.log(`Usando DB en: ${process.env.DB_PATH || 'ruta por defecto'}`)
+    })
+  } catch (err) {
+    console.error('[DB] Error al inicializar:', err)
+    process.exit(1)
+  }
+}
+
+init()

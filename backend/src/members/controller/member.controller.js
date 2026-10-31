@@ -56,21 +56,25 @@ const getAllMembers = async (req, res) => {
           model: FeeType,
           as: 'feeType',
           attributes: { exclude: ['createdAt', 'updatedAt'] }
-        },
-        {
-          model: Payment,
-          as: 'payments',
-          separate: true, // para ordenar pagos sin duplicar miembros
-          limit: 1,
-          order: [['paymentDate', 'DESC']]
         }
       ],
       order: [['lastName', 'ASC']]
     });
 
+    await Promise.all(
+      members.map(async member => {
+        const lastPayment = await Payment.findOne({
+          where: { memberId: member.id },
+          order: [['paymentDate', 'DESC']]
+        });
+        member.setDataValue('payments', lastPayment ? [lastPayment] : []);
+      })
+    );
+
     // 2. Validar vigencia de pagos y actualizar status
     for (let member of members) {
-      const lastPayment = member.payments[0]; // último pago
+      const payments = member.getDataValue('payments') || [];
+      const lastPayment = payments[0]; // ultimo pago
 
       let newStatus = 'Inactivo'; // default
       if (lastPayment) {

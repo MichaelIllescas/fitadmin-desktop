@@ -24,6 +24,7 @@ const Assistance = sequelize.define('Assistance', {
     allowNull: true
   }
 }, {
+  tableName: 'Assistance',
   timestamps: true
 });
 

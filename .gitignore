@@ -1,16 +1,17 @@
-# Ignorar dependencias
-/node_modules/
+# Dependencias
+node_modules/
 /node/
 
-/frontend/node_modules
-/backend/node_modules
-
-# Logs
-*.log
+# Bases de datos locales (contienen datos de socios)
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
 
 # Builds
 /dist
 /build
+/frontend/dist
 
-# Archivos de entorno
+# Logs y entorno
+*.log
 .env

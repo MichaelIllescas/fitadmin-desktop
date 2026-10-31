@@ -1,10 +1,19 @@
-const { Sequelize } = require('sequelize');
+const { Sequelize } = require('sequelize')
+const path = require('path')
+const fs = require('fs')
 
-// Crear instancia de Sequelize usando SQLite
+const dbPath = process.env.DB_PATH || path.join(__dirname, '..', 'database.sqlite')
+
+fs.mkdirSync(path.dirname(dbPath), { recursive: true })
+if (!fs.existsSync(dbPath)) {
+  fs.writeFileSync(dbPath, '')
+}
+
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: './database.sqlite', // archivo que se creará en la raíz del proyecto
-  logging: false, // podés poner true si querés ver las queries en consola
-});
+  storage: dbPath,
+  logging: false,
+  pool: { max: 1, min: 0 }
+})
 
-module.exports = sequelize;
+module.exports = sequelize
