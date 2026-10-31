@@ -7,7 +7,7 @@
 .dashboard-background {
   position: absolute;
   inset: 0;
-  background-image: url('/fit-admin-frontend/src/assets/img/logo.jpg') !important; 
+  background-image: url('../../assets/img/logo.jpg') !important; 
   background-size: cover;
 
 
