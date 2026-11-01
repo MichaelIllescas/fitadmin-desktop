@@ -7,7 +7,6 @@
 .dashboard-background {
   position: absolute;
   inset: 0;
-  background-image: url('../../assets/img/logo.jpg') !important; 
   background-size: cover;
 
 
@@ -19,6 +18,3 @@
   padding: 2rem;
 }
 
-.div-img{
-    background-color: #000 !important;
-}

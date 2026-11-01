@@ -15,15 +15,13 @@
       "main.js",
       "backend/**/*",
       "frontend/dist/**/*",
-      "icono.ico",
       "node/**"
     ],
     "directories": {
       "buildResources": "assets"
     },
     "win": {
-      "target": "nsis",
-      "icon": "icono.ico"
+      "target": "nsis"
     },
     "nsis": {
       "oneClick": false,

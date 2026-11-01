@@ -12,6 +12,8 @@ Desarrollada originalmente para un gimnasio que la usó en producción.
 - **Gastos:** registro y consulta de egresos del gimnasio.
 - **Finanzas:** ingresos diarios, mensuales y anuales, gastos mensuales y rentabilidad anual, con gráficos.
 
+El detalle de los requerimientos y el orden en que se desarrollaron está en [docs/historias-de-usuario.md](docs/historias-de-usuario.md).
+
 ## Stack
 
 | Capa | Tecnologías |
@@ -41,7 +43,7 @@ fitadmin/
 ├── main.js      proceso principal de Electron
 ├── backend/     API REST (Express + Sequelize)
 ├── frontend/    interfaz (React + Vite)
-└── icono.ico
+└── docs/        historias de usuario y plan de desarrollo
 ```
 
 Cada módulo de negocio (`members`, `payments`, `assistances`, `feeTypes`, `expenses`, `reports`) tiene en el backend sus propias rutas, controlador y modelo, y en el frontend su carpeta dentro de `src/features`.

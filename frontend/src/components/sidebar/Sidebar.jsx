@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import sidebarConfig from './sidebarConfig'
 import './Sidebar.css'
-import img from '../../assets/img/logo-sin-fondo.png';
 
 const Sidebar = () => {
   const [openMenu, setOpenMenu] = useState(null)
@@ -43,7 +42,6 @@ const Sidebar = () => {
         ))}
       </ul>
 
-      <img src={img} alt="" style={{ height: '100px', width: '100px', margin: "0 auto 10px" }} />
 
       <hr />
       <div className="text-white">v1.0</div>

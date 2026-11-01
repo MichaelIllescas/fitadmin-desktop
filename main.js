@@ -32,7 +32,6 @@ function createWindow() {
   win = new BrowserWindow({
     width: 1200,
     height: 800,
-    icon: path.join(app.isPackaged ? process.resourcesPath : __dirname, 'icono.ico'),
     show: false,
     backgroundColor: '#111111',
     webPreferences: {
